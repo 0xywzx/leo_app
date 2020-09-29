@@ -14,9 +14,30 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   bool _showPassword = false;
+  String _errorMessage ='';
   final TextEditingController _mailEditingController = TextEditingController();
   final TextEditingController _passwordEditingController = TextEditingController();
-  
+
+  Future<http.Response> _signinWidget(String _emai, String _passward) async {
+  final http.Response response = await http.post(
+    'https://leodb.sakigake.tech/api/v1/signin',
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'email': _emai,
+      'password': _passward
+    }),
+  );
+  if (response.statusCode == 200) {
+    UserToken().setUserToken(json.decode(response.body));
+  } else {
+    setState(() {
+      _errorMessage = "メールアドレスかパスワードが正しくありません";
+    });
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,16 +50,23 @@ class _SignInState extends State<SignIn> {
         child: Column(
           children: <Widget>[
             const SizedBox(height: 85),
+            Text(
+              '$_errorMessage',
+              style: TextStyle(
+                color: Colors.redAccent
+              ),
+            ),
             Align(
               alignment: Alignment.centerLeft,
               child: Text("メールアドレス"),
             ),
-            TextField(
+            TextFormField(
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.mail_outline),
                 hintText: 'メールアドレス',
               ),
+              validator: (value) => value.isEmpty ? 'メールアドレスを入力してください' : null,
               controller: _mailEditingController,
             ),
             const SizedBox(height: 16),
@@ -82,23 +110,5 @@ class _SignInState extends State<SignIn> {
         ),
       ),
     );
-  }
-}
-
-Future<http.Response> _signinWidget(String _emai, String _passward) async {
-  final http.Response response = await http.post(
-    'https://leodb.sakigake.tech/api/v1/signin',
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
-      'email': _emai,
-      'password': _passward
-    }),
-  );
-  if (response.statusCode == 200) {
-    UserToken().setUserToken(json.decode(response.body));
-  } else {
-    throw Exception('Failed to post sign in data');
   }
 }
