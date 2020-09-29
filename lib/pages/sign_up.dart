@@ -5,35 +5,42 @@ import 'package:http/http.dart' as http;
 import 'package:leo_app/components/app_color.dart';
 import 'package:leo_app/store/user_token.dart';
 
-class SignIn extends StatefulWidget {
+class SignUp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _SignInState();
+    return _SignUpState();
   }
 }
 
-class _SignInState extends State<SignIn> {
+class _SignUpState extends State<SignUp> {
   bool _showPassword = false;
   String _errorMessage ='';
+  final TextEditingController _userNameEditingController = TextEditingController();
   final TextEditingController _mailEditingController = TextEditingController();
   final TextEditingController _passwordEditingController = TextEditingController();
+  final TextEditingController _passwordConfirmationEditingController = TextEditingController();
 
-  Future<http.Response> _signinWidget(String _emai, String _passward) async {
+  Future<http.Response> _signupButton(String _email, String _passward) async {
+    Map userData = {
+      'user' : {
+        'name': _userNameEditingController.text,
+        'email': _mailEditingController.text,
+        'password': _passwordEditingController.text,
+        'password_confirmation': _passwordConfirmationEditingController.text
+      },
+    };
     final http.Response response = await http.post(
-      'https://leodb.sakigake.tech/api/v1/signin',
+      'http://localhost:3000/api/v1/users',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
-        'email': _emai,
-        'password': _passward
-      }),
+      body: jsonEncode(userData),
     );
     if (response.statusCode == 200) {
       UserToken().setUserToken(json.decode(response.body));
     } else {
       setState(() {
-        _errorMessage = "メールアドレスかパスワードが正しくありません";
+        _errorMessage = "入力内容をもう一度ご確認ください";
       });
     }
   }
@@ -41,8 +48,9 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('ログイン'),
+        title: Text('新規登録'),
         backgroundColor: Colors.blueAccent,
       ),
       body: Container(
@@ -58,6 +66,17 @@ class _SignInState extends State<SignIn> {
             ),
             Align(
               alignment: Alignment.centerLeft,
+              child: Text("ユーザー名"),
+            ),
+            TextFormField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.person_outline),
+                hintText: 'ユーザー名',
+              ),
+              controller: _userNameEditingController,
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
               child: Text("メールアドレス"),
             ),
             TextFormField(
@@ -66,7 +85,6 @@ class _SignInState extends State<SignIn> {
                 prefixIcon: Icon(Icons.mail_outline),
                 hintText: 'メールアドレス',
               ),
-              validator: (value) => value.isEmpty ? 'メールアドレスを入力してください' : null,
               controller: _mailEditingController,
             ),
             const SizedBox(height: 16),
@@ -92,29 +110,39 @@ class _SignInState extends State<SignIn> {
               ),
               controller: _passwordEditingController,
             ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text("パスワード確認"),
+            ),
+            TextField(
+              obscureText: !_showPassword,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.vpn_key),
+                hintText: "もう一度パスワードを入力ください",
+                suffixIcon: IconButton(
+                  icon: Icon(_showPassword
+                    ? Icons.visibility
+                    : Icons.visibility_off),
+                  onPressed: () {
+                    this.setState((){
+                      _showPassword = !_showPassword;
+                    });
+                  },
+                ),
+              ),
+              controller: _passwordConfirmationEditingController,
+            ),
             const SizedBox(height: 16),
             RaisedButton(
               child: Text(
-                "ログイン",
+                "新規登録",
                 style: TextStyle(color: Colors.white),
               ),
               color: AppColor.hexColor("#1E65DC"),
               onPressed: (){
-                _signinWidget(
+                _signupButton(
                   _mailEditingController.text,
                   _passwordEditingController.text
-                );
-              },
-            ),
-            GestureDetector(
-              child: Text(
-                "新規登録",
-                style: TextStyle(color: Colors.blueAccent),
-              ),
-              onTap: () {
-                Navigator.pushNamed(
-                  context, 
-                  '/sign_up',
                 );
               },
             ),

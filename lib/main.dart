@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:leo_app/pages/sign_up.dart';
 import 'package:leo_app/pages/sign_in.dart';
 
 
@@ -11,6 +12,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => SignIn(),
+        '/sign_up': (context) => SignUp(),
         '/sign_in': (context) => SignIn(),
       },
     );
