@@ -13,6 +13,7 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  bool _showPassword = false;
   final TextEditingController _mailEditingController = TextEditingController();
   final TextEditingController _passwordEditingController = TextEditingController();
   
@@ -46,10 +47,20 @@ class _SignInState extends State<SignIn> {
               child: Text("パスワード"),
             ),
             TextField(
-              obscureText: true,
+              obscureText: !_showPassword,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.vpn_key),
                 hintText: "パスワード",
+                suffixIcon: IconButton(
+                  icon: Icon(_showPassword
+                    ? Icons.visibility
+                    : Icons.visibility_off),
+                  onPressed: () {
+                    this.setState((){
+                      _showPassword = !_showPassword;
+                    });
+                  },
+                ),
               ),
               controller: _passwordEditingController,
             ),
