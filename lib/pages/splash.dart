@@ -29,15 +29,9 @@ class _SplashState extends State<Splash> {
     ]).whenComplete(() async {
       debugPrint(UserToken().session ?? '');
       if ((UserToken().session ?? '').isNotEmpty) {
-        Navigator.pushNamed(
-          context, 
-          '/home',
-        );
+        Navigator.pushReplacementNamed(context, '/home');
       } else {
-        Navigator.pushNamed(
-          context, 
-          '/sign_in',
-        );
+        Navigator.pushReplacementNamed(context, '/sign_in');
       }
     });
   }
