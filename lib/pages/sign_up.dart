@@ -38,7 +38,7 @@ class _SignUpState extends State<SignUp> {
     );
     if (response.statusCode == 200) {
       UserToken().setUserToken(json.decode(response.body));
-      
+      Navigator.pushReplacementNamed(context, '/home');
     } else {
       setState(() {
         _errorMessage = "入力内容をもう一度ご確認ください";

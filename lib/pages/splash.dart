@@ -27,7 +27,6 @@ class _SplashState extends State<Splash> {
     Future.wait([
       _delay(),
     ]).whenComplete(() async {
-      debugPrint(UserToken().session ?? '');
       if ((UserToken().session ?? '').isNotEmpty) {
         Navigator.pushReplacementNamed(context, '/home');
       } else {
