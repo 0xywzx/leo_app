@@ -31,6 +31,7 @@ class _SignInState extends State<SignIn> {
     );
     if (response.statusCode == 200) {
       UserToken().setUserToken(json.decode(response.body));
+      Navigator.pushReplacementNamed(context, '/home');
     } else {
       setState(() {
         _errorMessage = "メールアドレスかパスワードが正しくありません";
