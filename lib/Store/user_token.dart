@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserToken {
-  static String prefsKeySession = "session";
+  // シングルトン？
+  static UserToken _store = UserToken._internal();
+  factory UserToken() => _store;
+  UserToken._internal();
 
-  getUserToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('session') ?? '';
-  }
+  static String prefsKeySession = "session";
+  SharedPreferences prefs;
+
+  get session => prefs.getString(UserToken.prefsKeySession);
 
   setUserToken(Map<String, dynamic> json) async {
     final prefs = await SharedPreferences.getInstance();
