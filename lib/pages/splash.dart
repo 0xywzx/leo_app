@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:leo_app/main.dart';
 import 'package:leo_app/store/user_token.dart';
 
 class Splash extends StatefulWidget {
