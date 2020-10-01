@@ -55,7 +55,6 @@ class _HomeState extends State<Home> {
       },
     );
     if (response.statusCode == 200) {
-      debugPrint(response.body);
       final list = json.decode(response.body);
       if (list is List) {
         setState(() {
@@ -66,6 +65,8 @@ class _HomeState extends State<Home> {
       // 記事を取得できなかった場合は何か表示する
     }
   }
+
+  
 
   @override
   void initState() {
@@ -79,6 +80,36 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Text('My List'),
         backgroundColor: Colors.blueAccent,
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+            DrawerHeader(
+              child: Text(
+                'My App',
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.white,
+                ),
+              ),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+            ),
+            ListTile(
+              title: Text('Los Angeles'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Honolulu'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
       body: ListView.builder(
         itemCount: articles == null ? 0 : articles.length, 
