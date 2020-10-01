@@ -84,6 +84,7 @@ class _HomeState extends State<Home> {
         itemCount: articles == null ? 0 : articles.length, 
         itemBuilder: (BuildContext context, int index) {
           return Container(
+            padding: const EdgeInsets.all(12),
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -92,8 +93,11 @@ class _HomeState extends State<Home> {
                     children: [
                       Container(
                         padding: const EdgeInsets.only(bottom: 8),
-                        child: Text(
+                        child: 
+                        Text(
                           articles[index].title,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -101,6 +105,8 @@ class _HomeState extends State<Home> {
                       ),
                       Text(
                         articles[index].articleNote,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 3,
                         style: TextStyle(
                           color: Colors.grey[500],
                         ),
@@ -108,8 +114,10 @@ class _HomeState extends State<Home> {
                     ],
                   ),
                 ),
-                SizedBox(
+                Container(
+                  margin: EdgeInsets.only(left: 12),
                   height: 60,
+                  width: 120,
                   child: Image.network(
                     articles[index].ogImageUrl,
                   ),
