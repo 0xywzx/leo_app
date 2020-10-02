@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:leo_app/components/app_color.dart';
+import 'package:leo_app/pages/splash.dart';
+import 'package:leo_app/components/side_drawer.dart';
 import 'package:leo_app/store/user_token.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -38,14 +40,26 @@ class Article {
   }
 }
 
+class Category {
+  int id;
+  String categoryName;
+
+  Category(this.id, this.categoryName);
+
+  Category.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    categoryName = json['category_name'];
+  }
+}
+
 class _HomeState extends State<Home> {
-  List articleList;
   List<Article> articles;
+  List<Category> categories;
 
   Future getArticle(String isRead) async {
+    // あとで消す
     UserToken().prefs = await SharedPreferences.getInstance();
     // final _userToken = UserToken().session();
-    debugPrint(UserToken().session ?? '');
     var uri = Uri.parse("http://localhost:3000/api/v1/all_unread_or_read_articles");
     uri = uri.replace(queryParameters: <String, String>{'is_read': isRead});
     final http.Response response = await http.get(
@@ -66,12 +80,37 @@ class _HomeState extends State<Home> {
     }
   }
 
-  
+  Future getCategories() async {
+    // あとで消す
+    UserToken().prefs = await SharedPreferences.getInstance();
+    var uri = Uri.parse("http://localhost:3000/api/v1/categories");
+    final http.Response response = await http.get(
+      uri,
+      headers: <String, String>{
+        'Authorization': "Token 5393cb620f0d652b0cc16753c094d095baec",
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    if (response.statusCode == 200) {
+      debugPrint(response.body);
+      final list = json.decode(response.body);
+      if (list is List) {
+        setState(() {
+          categories = list.map((post) => Category.fromJson(post)).toList();
+        });
+      }
+    } else {
+      // ToDo: エラーハンドリング
+    }
+  }
+
+
 
   @override
   void initState() {
     super.initState();
     getArticle("0");
+    getCategories();
   }
 
   @override
@@ -81,36 +120,7 @@ class _HomeState extends State<Home> {
         title: Text('My List'),
         backgroundColor: Colors.blueAccent,
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            DrawerHeader(
-              child: Text(
-                'My App',
-                style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.white,
-                ),
-              ),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-            ),
-            ListTile(
-              title: Text('Los Angeles'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('Honolulu'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: SideDrawer(),
       body: ListView.builder(
         itemCount: articles == null ? 0 : articles.length, 
         itemBuilder: (BuildContext context, int index) {
@@ -149,9 +159,10 @@ class _HomeState extends State<Home> {
                   margin: EdgeInsets.only(left: 12),
                   height: 60,
                   width: 120,
-                  child: Image.network(
-                    articles[index].ogImageUrl,
-                  ),
+                  child: Text('写真'),
+                  // child: Image.network(
+                  //   articles[index].ogImageUrl,
+                  // ),
                 ),
               ],
             ),
