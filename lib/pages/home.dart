@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Home extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _HomeState();
+    return HomeState();
   }
 }
 
@@ -40,23 +40,17 @@ class Article {
   }
 }
 
-class Category {
-  int id;
-  String categoryName;
-
-  Category(this.id, this.categoryName);
-
-  Category.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    categoryName = json['category_name'];
-  }
-}
-
-class _HomeState extends State<Home> {
+class HomeState extends State<Home> {
   List<Article> articles;
   List<Category> categories;
 
-  Future getArticle(String isRead) async {
+  void delete() async {
+     setState(() {
+       articles = [];
+     });
+  }
+
+  Future getArticles(String isRead) async {
     // あとで消す
     UserToken().prefs = await SharedPreferences.getInstance();
     // final _userToken = UserToken().session();
@@ -80,38 +74,16 @@ class _HomeState extends State<Home> {
     }
   }
 
-  Future getCategories() async {
-    // あとで消す
-    UserToken().prefs = await SharedPreferences.getInstance();
-    var uri = Uri.parse("http://localhost:3000/api/v1/categories");
-    final http.Response response = await http.get(
-      uri,
-      headers: <String, String>{
-        'Authorization': "Token 5393cb620f0d652b0cc16753c094d095baec",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-    if (response.statusCode == 200) {
-      debugPrint(response.body);
-      final list = json.decode(response.body);
-      if (list is List) {
-        setState(() {
-          categories = list.map((post) => Category.fromJson(post)).toList();
-        });
-      }
-    } else {
-      // ToDo: エラーハンドリング
-    }
-  }
-
-
-
   @override
   void initState() {
     super.initState();
-    getArticle("0");
-    getCategories();
+    getArticles("0");
+    _results.add("testing1");
+    _results.add("testing2");
+    _results.add("testing3");
   }
+
+  List<String> _results = <String>[];
 
   @override
   Widget build(BuildContext context) {
@@ -121,54 +93,105 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.blueAccent,
       ),
       drawer: SideDrawer(),
-      body: ListView.builder(
-        itemCount: articles == null ? 0 : articles.length, 
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: 
-                        Text(
-                          articles[index].title,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView(
+              children: articles.map((item) => Container(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: 
+                            Text(
+                              item.title,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
+                          Text(
+                            item.articleNote,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 3,
+                            style: TextStyle(
+                              color: Colors.grey[500],
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        articles[index].articleNote,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 3,
-                        style: TextStyle(
-                          color: Colors.grey[500],
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 12),
+                      height: 60,
+                      width: 120,
+                      child: Text('写真'),
+                      // child: Image.network(
+                      //   articles[index].ogImageUrl,
+                      // ),
+                    ),
+                  ],
                 ),
-                Container(
-                  margin: EdgeInsets.only(left: 12),
-                  height: 60,
-                  width: 120,
-                  child: Text('写真'),
-                  // child: Image.network(
-                  //   articles[index].ogImageUrl,
-                  // ),
-                ),
-              ],
+              )).toList(),
             ),
-          );
-        }
-      ), 
+          ),
+        ],
+      ),
+      // body: ListView.builder(
+      //   itemCount: articles == null ? 0 : articles.length, 
+      //   itemBuilder: (BuildContext context, int index) {
+      //     return Container(
+      //       padding: const EdgeInsets.all(12),
+      //       child: Row(
+      //         children: <Widget>[
+      //           Expanded(
+      //             child: Column(
+      //               crossAxisAlignment: CrossAxisAlignment.start,
+      //               children: [
+      //                 Container(
+      //                   padding: const EdgeInsets.only(bottom: 8),
+      //                   child: 
+      //                   Text(
+      //                     articles[index].title,
+      //                     overflow: TextOverflow.ellipsis,
+      //                     maxLines: 2,
+      //                     style: TextStyle(
+      //                       fontWeight: FontWeight.bold,
+      //                     ),
+      //                   ),
+      //                 ),
+      //                 Text(
+      //                   articles[index].articleNote,
+      //                   overflow: TextOverflow.ellipsis,
+      //                   maxLines: 3,
+      //                   style: TextStyle(
+      //                     color: Colors.grey[500],
+      //                   ),
+      //                 ),
+      //               ],
+      //             ),
+      //           ),
+      //           Container(
+      //             margin: EdgeInsets.only(left: 12),
+      //             height: 60,
+      //             width: 120,
+      //             child: Text('写真'),
+      //             // child: Image.network(
+      //             //   articles[index].ogImageUrl,
+      //             // ),
+      //           ),
+      //         ],
+      //       ),
+      //     );
+      //   }
+      // ), 
     );
   }
 }

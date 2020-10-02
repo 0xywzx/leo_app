@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:leo_app/components/app_color.dart';
-import 'package:leo_app/pages/splash.dart';
+import 'package:leo_app/pages/home.dart';
 import 'package:leo_app/store/user_token.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -42,7 +42,6 @@ class _SideDrawerState extends State<SideDrawer> {
       },
     );
     if (response.statusCode == 200) {
-      debugPrint(response.body);
       final list = json.decode(response.body);
       if (list is List) {
         setState(() {
@@ -69,6 +68,7 @@ class _SideDrawerState extends State<SideDrawer> {
           return ListTile(
             title: Text(categories[index].categoryName),
             onTap: () {
+              HomeState().initState();
               Navigator.pop(context);
             },
           );
