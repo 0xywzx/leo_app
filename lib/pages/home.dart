@@ -10,9 +10,11 @@ import 'package:leo_app/store/user_token.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
+  static _HomeState of(BuildContext context) => context.findAncestorStateOfType<_HomeState>();
+
   @override
   State<StatefulWidget> createState() {
-    return HomeState();
+    return _HomeState();
   }
 }
 
@@ -40,14 +42,20 @@ class Article {
   }
 }
 
-class HomeState extends State<Home> {
+class _HomeState extends State<Home> {
   List<Article> articles;
   List<Category> categories;
 
-  void delete() async {
-     setState(() {
-       articles = [];
-     });
+  @override
+  void initState() {
+    super.initState();
+    getArticles("0");
+  }
+
+  void delete() {
+    setState(() {
+      articles = [];
+    });
   }
 
   Future getArticles(String isRead) async {
@@ -75,17 +83,6 @@ class HomeState extends State<Home> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    getArticles("0");
-    _results.add("testing1");
-    _results.add("testing2");
-    _results.add("testing3");
-  }
-
-  List<String> _results = <String>[];
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -95,9 +92,16 @@ class HomeState extends State<Home> {
       drawer: SideDrawer(),
       body: Column(
         children: <Widget>[
+          Container(
+            child: TextField(
+              onSubmitted: (String text) {
+                getArticles("1");
+              },
+            ),
+          ),
           Expanded(
             child: ListView(
-              children: articles.map((item) => Container(
+              children: articles?.map((item) => Container(
                 padding: const EdgeInsets.all(12),
                 child: Row(
                   children: <Widget>[
@@ -139,7 +143,7 @@ class HomeState extends State<Home> {
                     ),
                   ],
                 ),
-              )).toList(),
+              ))?.toList() ?? [],
             ),
           ),
         ],

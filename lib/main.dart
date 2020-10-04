@@ -3,6 +3,7 @@ import 'package:leo_app/pages/splash.dart';
 import 'package:leo_app/pages/home.dart';
 import 'package:leo_app/pages/sign_up.dart';
 import 'package:leo_app/pages/sign_in.dart';
+import 'package:leo_app/pages/test.dart';
 
 
 void main() => runApp(MyApp());
