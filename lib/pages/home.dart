@@ -49,7 +49,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    getArticles("0");
+    getArticles("0", "1");
   }
 
   void delete() {
@@ -58,12 +58,12 @@ class _HomeState extends State<Home> {
     });
   }
 
-  Future getArticles(String isRead) async {
+  Future getArticles(String isRead, String categoryId) async {
     // あとで消す
     UserToken().prefs = await SharedPreferences.getInstance();
     // final _userToken = UserToken().session();
-    var uri = Uri.parse("http://localhost:3000/api/v1/all_unread_or_read_articles");
-    uri = uri.replace(queryParameters: <String, String>{'is_read': isRead});
+    var uri = Uri.parse("http://localhost:3000/api/v1/categorised_articles");
+    uri = uri.replace(queryParameters: <String, String>{'is_read': isRead, 'category_id': categoryId});
     final http.Response response = await http.get(
       uri, headers: <String, String>{
         'Authorization': "Token 5393cb620f0d652b0cc16753c094d095baec",
@@ -91,14 +91,7 @@ class _HomeState extends State<Home> {
       ),
       drawer: SideDrawer(),
       body: Column(
-        children: <Widget>[
-          Container(
-            child: TextField(
-              onSubmitted: (String text) {
-                getArticles("1");
-              },
-            ),
-          ),
+        children: <Widget>[       
           Expanded(
             child: ListView(
               children: articles?.map((item) => Container(

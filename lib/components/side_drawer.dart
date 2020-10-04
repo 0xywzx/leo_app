@@ -71,7 +71,7 @@ class _SideDrawerState extends State<SideDrawer> {
             onTap: () {
               // TestPage.of(context).updateResults("ssss");
               // TestPageState().updateResults("sss");
-              Home.of(context).delete();
+              Home.of(context).getArticles("0", categories[index].id.toString());
               Navigator.pop(context);
             },
           );
