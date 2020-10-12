@@ -18,21 +18,28 @@ class EditItemViewController: UIViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-
+        
 		title = "Edit Item"
 		textView.insertText(currentValue)
 		view.addSubview(textView)
         
 		textView.becomeFirstResponder()
 		
-		let doneButton = UIBarButtonItem(title: "Done", style: .done, target: nil, action: #selector(doneButtonClicked(_:)))
+		let doneButton = UIBarButtonItem(
+			title: "Done", 
+			style: .done, 
+			target: self,
+            action: #selector(doneButtonClicked(_:))
+		)
 		navigationItem.rightBarButtonItem = doneButton
 	}
     
-    @objc func doneButtonClicked(){
-			let newValue = textView.text!
-			delegate.itemFinishedEditing(newValue: newValue)
-    }
+	@objc public func doneButtonClicked(_ sender: UIBarButtonItem){
+      print("sss")
+
+		let newValue = textView.text!
+		delegate.itemFinishedEditing(newValue: newValue)
+	}
 
 	lazy var textView: UITextView = {
 		let frame = CGRect(x: self.view.frame.minX, y: self.view.frame.minY, width: self.view.frame.width, height: self.view.frame.height)
