@@ -19,6 +19,8 @@ class EditItemViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
         
+         print("ee")
+        
 		title = "Edit Item"
 		textView.insertText(currentValue)
 		view.addSubview(textView)
@@ -29,14 +31,12 @@ class EditItemViewController: UIViewController {
 			title: "Done", 
 			style: .done, 
 			target: self,
-            action: #selector(doneButtonClicked(_:))
+      action: #selector(doneButtonClicked(_:))
 		)
 		navigationItem.rightBarButtonItem = doneButton
 	}
     
 	@objc public func doneButtonClicked(_ sender: UIBarButtonItem){
-      print("sss")
-
 		let newValue = textView.text!
 		delegate.itemFinishedEditing(newValue: newValue)
 	}
