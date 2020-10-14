@@ -20,7 +20,7 @@ class _SignInState extends State<SignIn> {
 
   Future<http.Response> _signinWidget(String _emai, String _passward) async {
     final http.Response response = await http.post(
-      'http://169.254.22.246:3000/api/v1/signin',
+      'http://192.168.100.137:3000/api/v1/signin',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

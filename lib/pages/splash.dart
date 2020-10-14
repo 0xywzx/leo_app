@@ -21,6 +21,7 @@ class _SplashState extends State<Splash> {
 
   move() async {
     // sharedPreferenceのインスタンスを保存しておく
+    SharedPreferences.setMockInitialValues({});
     UserToken().prefs = await SharedPreferences.getInstance();
 
     Future.wait([

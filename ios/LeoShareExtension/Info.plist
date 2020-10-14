@@ -42,7 +42,6 @@
                         || ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.url"
                         || ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.data"
                     )
-
                 ).@count == $extensionItem.attachments.@count
             ).@count == 1
             </string>
