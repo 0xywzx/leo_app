@@ -10,6 +10,7 @@ import 'package:leo_app/components/side_drawer.dart';
 import 'package:leo_app/store/user_token.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
   static _HomeState of(BuildContext context) => context.findAncestorStateOfType<_HomeState>();
@@ -48,11 +49,13 @@ class _HomeState extends State<Home> {
   static DotEnv _env = DotEnv();
   List<Article> articles;
   List<Category> categories;
+  String homeTitle = "";
+  String titleIcon = "";
 
   @override
   void initState() {
     super.initState();
-    getArticles("0", "1");
+    getArticles("0", "1", "My List");
   }
 
   void delete() {
@@ -61,7 +64,7 @@ class _HomeState extends State<Home> {
     });
   }
 
-  Future getArticles(String isRead, String categoryId) async {
+  Future getArticles(String isRead, String categoryId, String _homeTitle) async {
     // 開発のためここでprfを定義。あとで消す
     UserToken().prefs = await SharedPreferences.getInstance();
     // final _userToken = UserToken().session();
@@ -73,6 +76,14 @@ class _HomeState extends State<Home> {
       } else {
         isRead = "1";
       }
+    }
+
+    // タイトルをカテゴリーの名前に変更
+    homeTitle = _homeTitle;
+    if (isRead == "0") {
+      titleIcon = "book";
+    } else {
+      titleIcon = "bookmark";
     }
 
     var uri = Uri.parse(_env.env['MYSQL_URL'] + "/api/v1/categorised_articles");
@@ -94,12 +105,27 @@ class _HomeState extends State<Home> {
       // 記事を取得できなかった場合は何か表示する
     }
   }
+  
+  _launchURL(String _url) async {
+    if (await canLaunch(_url)) {
+      await launch(_url);
+    } else {
+      throw 'Could not Launch $_url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My List'),
+        // leading: Icon(Icons.book),
+        title: Row(
+          children: <Widget>[
+            Icon(Icons.book),
+            SizedBox(width: 8),
+            Text(homeTitle),
+          ],
+        ),
         backgroundColor: Colors.blueAccent,
       ),
       drawer: SideDrawer(),
@@ -109,45 +135,50 @@ class _HomeState extends State<Home> {
             child: ListView(
               children: articles?.map((item) => Container(
                 padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: 
-                            Text(
-                              item.title,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                child: GestureDetector(
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: 
+                              Text(
+                                item.title,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                          Text(
-                            item.articleNote,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 3,
-                            style: TextStyle(
-                              color: Colors.grey[500],
+                            Text(
+                              item.articleNote,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 3,
+                              style: TextStyle(
+                                color: Colors.grey[500],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(left: 12),
-                      height: 60,
-                      width: 120,
-                      child: Text('写真'),
-                      // child: Image.network(
-                      //   articles[index].ogImageUrl,
-                      // ),
-                    ),
-                  ],
+                      Container(
+                        margin: EdgeInsets.only(left: 12),
+                        height: 60,
+                        width: 120,
+                        child: Text('写真'),
+                        // child: Image.network(
+                        //   articles[index].ogImageUrl,
+                        // ),
+                      ),
+                    ],
+                  ),
+                  onTap: () {
+                    _launchURL(item.articleUrl);
+                  },
                 ),
               ))?.toList() ?? [],
             ),

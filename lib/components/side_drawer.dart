@@ -57,7 +57,7 @@ class _SideDrawerState extends State<SideDrawer> with SingleTickerProviderStateM
   }
 
   TabController _tabController;
-
+  static const Icon icoo = Icon(Icons.book);
   final List<Tab> tabs = <Tab>[
     Tab(
       text:'未読記事', 
@@ -81,7 +81,7 @@ class _SideDrawerState extends State<SideDrawer> with SingleTickerProviderStateM
       children: categories?.map((item) => ListTile(
         title: Text(item.categoryName),
         onTap: () {
-          Home.of(context).getArticles(tab.text, item.id.toString());
+          Home.of(context).getArticles(tab.text, item.id.toString(), item.categoryName);
           Navigator.pop(context);
         },
       ))?.toList() ?? [],
