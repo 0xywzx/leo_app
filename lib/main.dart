@@ -5,10 +5,16 @@ import 'package:leo_app/pages/home.dart';
 import 'package:leo_app/pages/sign_up.dart';
 import 'package:leo_app/pages/sign_in.dart';
 import 'package:leo_app/pages/test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
-
-void main() => runApp(MyApp());
+Future main() async {
+  // SharedPreferences.setMockInitialValues({});
+  await DotEnv().load('.env');
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
 
@@ -20,7 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => TestPage(),
+        '/': (context) => Home(),
         '/home': (context) => Home(),
         '/sign_up': (context) => SignUp(),
         '/sign_in': (context) => SignIn(),

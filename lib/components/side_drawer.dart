@@ -8,6 +8,7 @@ import 'package:leo_app/pages/home.dart';
 import 'package:leo_app/pages/test.dart';
 import 'package:leo_app/store/user_token.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SideDrawer extends StatefulWidget {
   @override
@@ -28,13 +29,14 @@ class Category {
   }
 }
 
-class _SideDrawerState extends State<SideDrawer> {
+class _SideDrawerState extends State<SideDrawer> with SingleTickerProviderStateMixin {
   List<Category> categories;
+  static DotEnv _env = DotEnv();
 
   Future getCategories() async {
     // あとで消す
     UserToken().prefs = await SharedPreferences.getInstance();
-    var uri = Uri.parse("http://localhost:3000/api/v1/categories");
+    var uri = Uri.parse(_env.env['MYSQL_URL'] + "/api/v1/categories");
     final http.Response response = await http.get(
       uri,
       headers: <String, String>{
@@ -57,25 +59,60 @@ class _SideDrawerState extends State<SideDrawer> {
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: tabs.length, vsync: this);
     getCategories();
+  }
+
+  TabController _tabController;
+
+  final List<Tab> tabs = <Tab>[
+    Tab(
+      text:'既読記事', 
+      icon: Icon(Icons.book),
+    ),
+    Tab(
+      text:'未読記事',
+      icon: Icon(Icons.bookmark)
+    ),
+  ];
+  
+  Widget _createTabView(Tab tab){
+    debugPrint(tab.text);
+    return ListView(
+      children: categories?.map((item) => ListTile(
+        title: Text(item.categoryName),
+        onTap: () {
+          Home.of(context).getArticles("0", item.id.toString());
+          Navigator.pop(context);
+        },
+      ))?.toList() ?? [],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView.builder(
-        itemCount: categories == null ? 0 : categories.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            title: Text(categories[index].categoryName),
-            onTap: () {
-              // TestPage.of(context).updateResults("ssss");
-              // TestPageState().updateResults("sss");
-              Home.of(context).getArticles("0", categories[index].id.toString());
-              Navigator.pop(context);
-            },
-          );
-        },
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.6,
+      child: Drawer(
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: 24),
+            TabBar(
+              labelColor: Colors.deepOrange,
+              unselectedLabelColor: Colors.black,
+              controller: _tabController,
+              tabs: tabs,
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: tabs.map((tab) {
+                  return _createTabView(tab);
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

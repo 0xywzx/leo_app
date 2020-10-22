@@ -9,6 +9,7 @@ import 'package:leo_app/pages/splash.dart';
 import 'package:leo_app/components/side_drawer.dart';
 import 'package:leo_app/store/user_token.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Home extends StatefulWidget {
   static _HomeState of(BuildContext context) => context.findAncestorStateOfType<_HomeState>();
@@ -44,6 +45,7 @@ class Article {
 }
 
 class _HomeState extends State<Home> {
+  static DotEnv _env = DotEnv();
   List<Article> articles;
   List<Category> categories;
 
@@ -60,10 +62,10 @@ class _HomeState extends State<Home> {
   }
 
   Future getArticles(String isRead, String categoryId) async {
-    // あとで消す
+    // 開発のためここでprfを定義。あとで消す
     UserToken().prefs = await SharedPreferences.getInstance();
     // final _userToken = UserToken().session();
-    var uri = Uri.parse("http://localhost:3000/api/v1/categorised_articles");
+    var uri = Uri.parse(_env.env['MYSQL_URL'] + "/api/v1/categorised_articles");
     uri = uri.replace(queryParameters: <String, String>{'is_read': isRead, 'category_id': categoryId});
     final http.Response response = await http.get(
       uri, headers: <String, String>{
