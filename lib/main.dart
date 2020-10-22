@@ -6,7 +6,6 @@ import 'package:leo_app/pages/sign_up.dart';
 import 'package:leo_app/pages/sign_in.dart';
 import 'package:leo_app/pages/test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
@@ -18,7 +17,7 @@ Future main() async {
 
 class MyApp extends StatelessWidget {
 
-   @override
+  // @override
   // _MyAppState createState() => _MyAppState();
 
   @override
@@ -26,7 +25,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => Home(),
+        '/': (context) => Splash(),
         '/home': (context) => Home(),
         '/sign_up': (context) => SignUp(),
         '/sign_in': (context) => SignIn(),

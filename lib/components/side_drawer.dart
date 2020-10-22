@@ -57,7 +57,6 @@ class _SideDrawerState extends State<SideDrawer> with SingleTickerProviderStateM
   }
 
   TabController _tabController;
-  static const Icon icoo = Icon(Icons.book);
   final List<Tab> tabs = <Tab>[
     Tab(
       text:'未読記事', 

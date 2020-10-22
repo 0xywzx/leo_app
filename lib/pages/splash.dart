@@ -26,6 +26,8 @@ class _SplashState extends State<Splash> {
     Future.wait([
       _delay(),
     ]).whenComplete(() async {
+      debugPrint(UserToken().session ?? '');
+      // セッション情報がある場合はホーム画面へ、ない場合はログイン画面へ
       if ((UserToken().session ?? '').isNotEmpty) {
         Navigator.pushReplacementNamed(context, '/home');
       } else {
@@ -50,7 +52,7 @@ class _SplashState extends State<Splash> {
           children: <Widget>[
             Positioned(
               left: (windowWidth - logoWidth) / 2,
-              top: windowHeight / 2 - (logoHeight / 1.35), // 1.35は微調整のため
+              top: windowHeight / 2 - (logoHeight / 1.35), 
               width: logoWidth,
               child: Image.asset('images/leo_icon.png'),
             ),
