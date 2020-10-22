@@ -56,33 +56,32 @@ class _SideDrawerState extends State<SideDrawer> with SingleTickerProviderStateM
     }
   }
 
+  TabController _tabController;
+
+  final List<Tab> tabs = <Tab>[
+    Tab(
+      text:'未読記事', 
+      icon: Icon(Icons.book),
+    ),
+    Tab(
+      text:'既読記事',
+      icon: Icon(Icons.bookmark),
+    ),
+  ];
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: tabs.length, vsync: this);
     getCategories();
   }
-
-  TabController _tabController;
-
-  final List<Tab> tabs = <Tab>[
-    Tab(
-      text:'既読記事', 
-      icon: Icon(Icons.book),
-    ),
-    Tab(
-      text:'未読記事',
-      icon: Icon(Icons.bookmark)
-    ),
-  ];
   
   Widget _createTabView(Tab tab){
-    debugPrint(tab.text);
     return ListView(
       children: categories?.map((item) => ListTile(
         title: Text(item.categoryName),
         onTap: () {
-          Home.of(context).getArticles("0", item.id.toString());
+          Home.of(context).getArticles(tab.text, item.id.toString());
           Navigator.pop(context);
         },
       ))?.toList() ?? [],
@@ -98,8 +97,8 @@ class _SideDrawerState extends State<SideDrawer> with SingleTickerProviderStateM
           children: <Widget>[
             SizedBox(height: 24),
             TabBar(
-              labelColor: Colors.deepOrange,
-              unselectedLabelColor: Colors.black,
+              labelColor: AppColor.hexColor("#1E65DC"),
+              unselectedLabelColor: Colors.grey,
               controller: _tabController,
               tabs: tabs,
             ),

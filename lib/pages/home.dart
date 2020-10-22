@@ -65,6 +65,16 @@ class _HomeState extends State<Home> {
     // 開発のためここでprfを定義。あとで消す
     UserToken().prefs = await SharedPreferences.getInstance();
     // final _userToken = UserToken().session();
+
+    // indexeを渡せばもっとうまくかけるかも。
+    if (isRead == "未読記事" || isRead == "既読記事") {
+      if (isRead == "未読記事") {
+        isRead = "0";
+      } else {
+        isRead = "1";
+      }
+    }
+
     var uri = Uri.parse(_env.env['MYSQL_URL'] + "/api/v1/categorised_articles");
     uri = uri.replace(queryParameters: <String, String>{'is_read': isRead, 'category_id': categoryId});
     final http.Response response = await http.get(
