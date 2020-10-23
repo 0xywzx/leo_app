@@ -11,7 +11,6 @@ Widget headerWidget(BuildContext context) {
           filterQuality: FilterQuality.medium
         )
       ),
-      const SizedBox(height: 32),
     ],
   );
 }

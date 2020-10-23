@@ -70,22 +70,52 @@ class _SignInState extends State<SignIn> {
                 ),
               ),
               _buildInputTitle("メールアドレス"),
+              const SizedBox(height: 6),
               TextFormField(
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
+                  enabledBorder: new OutlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                      width: 3.0,
+                    ),
+                  ),
                   prefixIcon: Icon(Icons.mail_outline),
                   hintText: 'メールアドレス',
+                  isDense: true, 
                 ),
                 validator: (value) => value.isEmpty ? 'メールアドレスを入力してください' : null,
                 controller: _mailEditingController,
               ),
               const SizedBox(height: 16),
               _buildInputTitle("パスワード"),
+              const SizedBox(height: 6),
               TextField(
                 obscureText: !_showPassword,
                 decoration: InputDecoration(
+                  enabledBorder: new OutlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                      width: 3.0,
+                    ),
+                  ),
                   prefixIcon: Icon(Icons.vpn_key),
                   hintText: "パスワード",
+                  isDense: true, 
                   suffixIcon: IconButton(
                     icon: Icon(_showPassword
                       ? Icons.visibility

@@ -79,28 +79,73 @@ class _SignUpState extends State<SignUp> {
                 ),
               ),
               _buildInputTitle("ユーザー名"),
+              const SizedBox(height: 6),
               TextFormField(
                 decoration: InputDecoration(
+                  enabledBorder: new OutlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                      width: 3.0,
+                    ),
+                  ),
                   prefixIcon: Icon(Icons.person_outline),
                   hintText: 'ユーザー名',
+                  isDense: true, 
                 ),
                 controller: _userNameEditingController,
               ),
               _buildInputTitle("メールアドレス"),
+              const SizedBox(height: 6),
               TextFormField(
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
+                  enabledBorder: new OutlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                      width: 3.0,
+                    ),
+                  ),
                   prefixIcon: Icon(Icons.mail_outline),
                   hintText: 'メールアドレス',
+                  isDense: true, 
                 ),
                 controller: _mailEditingController,
               ),
               _buildInputTitle("パスワード"),
+              const SizedBox(height: 6),
               TextField(
                 obscureText: !_showPassword,
                 decoration: InputDecoration(
+                  enabledBorder: new OutlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                      width: 3.0,
+                    ),
+                  ),
                   prefixIcon: Icon(Icons.vpn_key),
                   hintText: "パスワード",
+                  isDense: true, 
                   suffixIcon: IconButton(
                     icon: Icon(_showPassword
                       ? Icons.visibility
@@ -115,11 +160,26 @@ class _SignUpState extends State<SignUp> {
                 controller: _passwordEditingController,
               ),
               _buildInputTitle("パスワード確認"),
+              const SizedBox(height: 6),
               TextField(
                 obscureText: !_showPassword,
                 decoration: InputDecoration(
+                  enabledBorder: new OutlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                      width: 30.0,
+                    ),
+                  ),
                   prefixIcon: Icon(Icons.vpn_key),
                   hintText: "もう一度パスワードを入力ください",
+                  isDense: true, 
                   suffixIcon: IconButton(
                     icon: Icon(_showPassword
                       ? Icons.visibility
@@ -133,7 +193,7 @@ class _SignUpState extends State<SignUp> {
                 ),
                 controller: _passwordConfirmationEditingController,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               ButtonTheme(
                 minWidth: MediaQuery.of(context).size.width * 0.75,
                 child: RaisedButton(
