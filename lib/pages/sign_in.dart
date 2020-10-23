@@ -20,7 +20,7 @@ class _SignInState extends State<SignIn> {
   final TextEditingController _mailEditingController = TextEditingController();
   final TextEditingController _passwordEditingController = TextEditingController();
 
-  Future<http.Response> _signinWidget(String _emai, String _passward) async {
+  Future _signinWidget(String _emai, String _passward) async {
     final http.Response response = await http.post(
       _env.env['MYSQL_URL'] + '/api/v1/signin',
       headers: <String, String>{
@@ -41,6 +41,13 @@ class _SignInState extends State<SignIn> {
     }
   }
 
+  Widget _buildInputTitle(String _inputTitle) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(_inputTitle),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,10 +66,7 @@ class _SignInState extends State<SignIn> {
                 color: Colors.redAccent
               ),
             ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text("メールアドレス"),
-            ),
+            _buildInputTitle("メールアドレス"),
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
@@ -73,10 +77,7 @@ class _SignInState extends State<SignIn> {
               controller: _mailEditingController,
             ),
             const SizedBox(height: 16),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text("パスワード"),
-            ),
+            _buildInputTitle("パスワード"),
             TextField(
               obscureText: !_showPassword,
               decoration: InputDecoration(

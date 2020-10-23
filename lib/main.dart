@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => Splash(),
+        '/': (context) => SignIn(),
         '/home': (context) => Home(),
         '/sign_up': (context) => SignUp(),
         '/sign_in': (context) => SignIn(),
@@ -34,6 +34,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
+// ここはiOSで共有ボタンを押した際に保存できるような機能を追加しようとしたのですがうまくいかなかったもの。
 // class _MyAppState extends State<MyApp> {
 //   StreamSubscription _intentDataStreamSubscription;
 //   List<SharedMediaFile> _sharedFiles;

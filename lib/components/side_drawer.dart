@@ -4,28 +4,17 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:leo_app/components/app_color.dart';
-import 'package:leo_app/pages/home.dart';
-import 'package:leo_app/pages/test.dart';
-import 'package:leo_app/store/user_token.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:leo_app/pages/home.dart';
+import 'package:leo_app/pages/test.dart';
+import 'package:leo_app/model/category.dart';
+import 'package:leo_app/store/user_token.dart';
 
 class SideDrawer extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _SideDrawerState();
-  }
-}
-
-class Category {
-  int id;
-  String categoryName;
-
-  Category(this.id, this.categoryName);
-
-  Category.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    categoryName = json['category_name'];
   }
 }
 
@@ -36,6 +25,8 @@ class _SideDrawerState extends State<SideDrawer> with SingleTickerProviderStateM
   Future getCategories() async {
     // あとで消す
     UserToken().prefs = await SharedPreferences.getInstance();
+
+    // カテゴリーリストの取得
     var uri = Uri.parse(_env.env['MYSQL_URL'] + "/api/v1/categories");
     final http.Response response = await http.get(
       uri,
@@ -57,6 +48,7 @@ class _SideDrawerState extends State<SideDrawer> with SingleTickerProviderStateM
   }
 
   TabController _tabController;
+  
   final List<Tab> tabs = <Tab>[
     Tab(
       text:'未読記事', 

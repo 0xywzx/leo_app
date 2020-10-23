@@ -20,7 +20,7 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _passwordEditingController = TextEditingController();
   final TextEditingController _passwordConfirmationEditingController = TextEditingController();
 
-  Future<http.Response> _signupButton(String _email, String _passward) async {
+  Future _signupButton(String _email, String _passward) async {
     Map userData = {
       'user' : {
         'name': _userNameEditingController.text,
@@ -46,6 +46,13 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
+  Widget _buildInputTitle(String _inputTitle) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(_inputTitle),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,10 +72,7 @@ class _SignUpState extends State<SignUp> {
                 color: Colors.redAccent
               ),
             ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text("ユーザー名"),
-            ),
+            _buildInputTitle("ユーザー名"),
             TextFormField(
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.person_outline),
@@ -76,10 +80,7 @@ class _SignUpState extends State<SignUp> {
               ),
               controller: _userNameEditingController,
             ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text("メールアドレス"),
-            ),
+            _buildInputTitle("メールアドレス"),
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
@@ -89,10 +90,7 @@ class _SignUpState extends State<SignUp> {
               controller: _mailEditingController,
             ),
             const SizedBox(height: 16),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text("パスワード"),
-            ),
+            _buildInputTitle("パスワード"),
             TextField(
               obscureText: !_showPassword,
               decoration: InputDecoration(
@@ -111,10 +109,7 @@ class _SignUpState extends State<SignUp> {
               ),
               controller: _passwordEditingController,
             ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text("パスワード確認"),
-            ),
+            _buildInputTitle("パスワード確認"),
             TextField(
               obscureText: !_showPassword,
               decoration: InputDecoration(

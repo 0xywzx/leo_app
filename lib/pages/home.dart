@@ -4,13 +4,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:leo_app/components/app_color.dart';
-import 'package:leo_app/pages/splash.dart';
 import 'package:leo_app/components/side_drawer.dart';
-import 'package:leo_app/store/user_token.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:leo_app/components/app_color.dart';
+import 'package:leo_app/pages/splash.dart';
+import 'package:leo_app/store/user_token.dart';
+import 'package:leo_app/model/article.dart';
+import 'package:leo_app/model/category.dart';
 
 class Home extends StatefulWidget {
   static _HomeState of(BuildContext context) => context.findAncestorStateOfType<_HomeState>();
@@ -65,6 +67,7 @@ class _HomeState extends State<Home> {
       },
     );
     if (response.statusCode == 200) {
+      debugPrint(response.body);
       final list = json.decode(response.body);
       if (list is List) {
         setState(() {
