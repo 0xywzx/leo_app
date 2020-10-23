@@ -1,6 +1,10 @@
 # leo_app
 
-A new Flutter project.
+こちらの[Webアプリ](https://github.com/Yosuke-Aramaki/leo)を、スマホ用にFlutterで開発しました。
+
+## デモ動画
+
+![DEMO](demo.gif)
 
 ## Getting Started
 
