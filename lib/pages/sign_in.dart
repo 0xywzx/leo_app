@@ -52,15 +52,25 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('ログイン'),
-        backgroundColor: Colors.blueAccent,
+        centerTitle: true, 
+        iconTheme: IconThemeData(
+          color: Colors.grey[600], //change your color here
+        ),
+        title: Text(
+          'ログイン',
+          style: TextStyle(
+            color: Colors.grey[600]
+          ),
+        ),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: Center(
         child: Container(
           width: MediaQuery.of(context).size.width * 0.75,
           child: Column(
-             mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               headerWidget(context),
               Text(

@@ -22,6 +22,7 @@ class _SplashState extends State<Splash> {
   move() async {
     // sharedPreferenceのインスタンスを保存しておく
     UserToken().prefs = await SharedPreferences.getInstance();
+    await UserToken().prefs.remove('session');
 
     Future.wait([
       _delay(),
@@ -41,7 +42,7 @@ class _SplashState extends State<Splash> {
     final double windowWidth = MediaQuery.of(context).size.width;
     final double windowHeight = MediaQuery.of(context).size.height;
     // ロゴ 縦横比が約 1:1.75
-    final double logoWidth = windowWidth * 0.67;
+    final double logoWidth = windowWidth * 0.4;
     final double logoHeight = logoWidth / 1.75;
 
     return Scaffold(

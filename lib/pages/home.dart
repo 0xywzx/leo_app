@@ -67,7 +67,6 @@ class _HomeState extends State<Home> {
       },
     );
     if (response.statusCode == 200) {
-      debugPrint(response.body);
       final list = json.decode(response.body);
       if (list is List) {
         setState(() {
@@ -91,15 +90,23 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // leading: Icon(Icons.book),
+        centerTitle: true,
+        iconTheme: IconThemeData(
+          color: Colors.grey[600], //change your color here
+        ),
         title: Row(
           children: <Widget>[
             Icon(Icons.book),
             SizedBox(width: 8),
-            Text(homeTitle),
+            Text(
+              homeTitle,
+              style: TextStyle(
+                color: Colors.grey[600]
+              ),
+            ),
           ],
         ),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       drawer: SideDrawer(),
       body: Column(

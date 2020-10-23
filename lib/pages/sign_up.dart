@@ -62,8 +62,17 @@ class _SignUpState extends State<SignUp> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('新規登録'),
-        backgroundColor: Colors.blueAccent,
+        centerTitle: true, 
+        iconTheme: IconThemeData(
+          color: Colors.grey[600], //change your color here
+        ),
+        title: Text(
+          '新規登録',
+          style: TextStyle(
+            color: Colors.grey[600]
+          ),
+        ),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: Center(
         child: Container(
