@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:leo_app/components/app_color.dart';
 import 'package:leo_app/store/user_token.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:leo_app/components/header_logo.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -55,74 +56,85 @@ class _SignInState extends State<SignIn> {
         title: Text('ログイン'),
         backgroundColor: Colors.blueAccent,
       ),
-      body: Container(
-        padding: EdgeInsets.all(25),
-        child: Column(
-          children: <Widget>[
-            const SizedBox(height: 85),
-            Text(
-              '$_errorMessage',
-              style: TextStyle(
-                color: Colors.redAccent
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.75,
+          child: Column(
+             mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              headerWidget(context),
+              Text(
+                '$_errorMessage',
+                style: TextStyle(
+                  color: Colors.redAccent
+                ),
               ),
-            ),
-            _buildInputTitle("メールアドレス"),
-            TextFormField(
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.mail_outline),
-                hintText: 'メールアドレス',
+              _buildInputTitle("メールアドレス"),
+              TextFormField(
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.mail_outline),
+                  hintText: 'メールアドレス',
+                ),
+                validator: (value) => value.isEmpty ? 'メールアドレスを入力してください' : null,
+                controller: _mailEditingController,
               ),
-              validator: (value) => value.isEmpty ? 'メールアドレスを入力してください' : null,
-              controller: _mailEditingController,
-            ),
-            const SizedBox(height: 16),
-            _buildInputTitle("パスワード"),
-            TextField(
-              obscureText: !_showPassword,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.vpn_key),
-                hintText: "パスワード",
-                suffixIcon: IconButton(
-                  icon: Icon(_showPassword
-                    ? Icons.visibility
-                    : Icons.visibility_off),
-                  onPressed: () {
-                    this.setState((){
-                      _showPassword = !_showPassword;
-                    });
+              const SizedBox(height: 16),
+              _buildInputTitle("パスワード"),
+              TextField(
+                obscureText: !_showPassword,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.vpn_key),
+                  hintText: "パスワード",
+                  suffixIcon: IconButton(
+                    icon: Icon(_showPassword
+                      ? Icons.visibility
+                      : Icons.visibility_off),
+                    onPressed: () {
+                      this.setState((){
+                        _showPassword = !_showPassword;
+                      });
+                    },
+                  ),
+                ),
+                controller: _passwordEditingController,
+              ),
+              const SizedBox(height: 24),
+              ButtonTheme(
+                minWidth: MediaQuery.of(context).size.width * 0.75,
+                child: RaisedButton(
+                  child: Text(
+                    "ログイン",
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                  ),
+                  color: AppColor.hexColor("#1E65DC"),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  splashColor: Colors.blueGrey,
+                  onPressed: (){
+                    _signinWidget(
+                      _mailEditingController.text,
+                      _passwordEditingController.text
+                    );
                   },
                 ),
               ),
-              controller: _passwordEditingController,
-            ),
-            const SizedBox(height: 16),
-            RaisedButton(
-              child: Text(
-                "ログイン",
-                style: TextStyle(color: Colors.white),
+              const SizedBox(height: 16),
+              GestureDetector(
+                child: Text(
+                  "新規登録",
+                  style: TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.w700),
+                ),
+                onTap: () {
+                  Navigator.pushNamed(
+                    context, 
+                    '/sign_up',
+                  );
+                },
               ),
-              color: AppColor.hexColor("#1E65DC"),
-              onPressed: (){
-                _signinWidget(
-                  _mailEditingController.text,
-                  _passwordEditingController.text
-                );
-              },
-            ),
-            GestureDetector(
-              child: Text(
-                "新規登録",
-                style: TextStyle(color: Colors.blueAccent),
-              ),
-              onTap: () {
-                Navigator.pushNamed(
-                  context, 
-                  '/sign_up',
-                );
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
