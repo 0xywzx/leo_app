@@ -29,6 +29,7 @@ class _HomeState extends State<Home> {
   List<Category> categories;
   String homeTitle = "";
   String titleIcon = "";
+  bool loading = true;
 
   @override
   void initState() {
@@ -39,7 +40,7 @@ class _HomeState extends State<Home> {
   Future getArticles(String isRead, String categoryId, String _homeTitle) async {
     // 開発のためここでprfを定義。あとで消す
     UserToken().prefs = await SharedPreferences.getInstance();
-
+   debugPrint(UserToken().session ?? '');
     // indexeを渡せばもっとうまくかけるかも。
     if (isRead == "未読記事" || isRead == "既読記事") {
       if (isRead == "未読記事") {
@@ -71,6 +72,7 @@ class _HomeState extends State<Home> {
       if (list is List) {
         setState(() {
           articles = list.map((post) => Article.fromJson(post)).toList();
+          loading = false;
         });
       }
     } else {
@@ -78,12 +80,24 @@ class _HomeState extends State<Home> {
     }
   }
   
+  // タップしたら記事にとぶ
   _launchURL(String _url) async {
     if (await canLaunch(_url)) {
       await launch(_url);
     } else {
       throw 'Could not Launch $_url';
     }
+  }
+
+  // 保存した日時の表示
+  _decoratDataFormate(String _createdAt) {
+    return _createdAt.substring(0, 10);
+  }
+
+  // 同じ日に保存したかの確認
+  _sameDate(int _index) {
+    debugPrint(articles[_index].createdAt);
+    return articles[_index-1].createdAt.substring(0, 10) != articles[_index].createdAt.substring(0, 10);
   }
 
   @override
@@ -109,13 +123,17 @@ class _HomeState extends State<Home> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       drawer: SideDrawer(),
-      body: Column(
-        children: <Widget>[       
-          Expanded(
-            child: ListView(
-              children: articles?.map((item) => Container(
-                padding: const EdgeInsets.all(12),
-                child: GestureDetector(
+      body: loading ? Text("Loading ... ")
+      : ListView.builder(
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: <Widget>[
+                index == 0 ? Text(articles[index].createdAt) : 
+                  _sameDate(index) ? Text(articles[index].createdAt) : Container(),
+                Container(),
+                GestureDetector(
                   child: Row(
                     children: <Widget>[
                       Expanded(
@@ -126,7 +144,7 @@ class _HomeState extends State<Home> {
                               padding: const EdgeInsets.only(bottom: 8),
                               child: 
                               Text(
-                                item.title,
+                                articles[index].title,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                                 style: TextStyle(
@@ -135,7 +153,7 @@ class _HomeState extends State<Home> {
                               ),
                             ),
                             Text(
-                              item.articleNote,
+                              articles[index].articleNote,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 3,
                               style: TextStyle(
@@ -149,24 +167,83 @@ class _HomeState extends State<Home> {
                         margin: EdgeInsets.only(left: 12),
                         height: 60,
                         width: 120,
-                        // child: Text(item.ogImageUrl),
-                        child: item.ogImageUrl == "/images/leo_icon_header.svg" ? 
+                        // child: Text(articles[index].ogImageUrl),
+                        child: articles[index].ogImageUrl == "/images/leo_icon_header.svg" ? 
                           Image.asset('images/leo_icon_header.png')
                           : Image.network(
-                          item.ogImageUrl,
+                          articles[index].ogImageUrl,
                         ),
                       ),
                     ],
                   ),
                   onTap: () {
-                    _launchURL(item.articleUrl);
+                    _launchURL(articles[index].articleUrl);
                   },
                 ),
-              ))?.toList() ?? [],
+              ],
             ),
-          ),
-        ],
+          );
+        }
       ),
+            // ListView(
+            //   children: articles.asMap().entries.map((item) => Container(
+            //     padding: const EdgeInsets.all(12),
+            //     child: Column(
+            //       children: <Widget>[
+            //         item.key == 0 ? Text(item.value.createdAt) : 
+            //           _sameDate(item.key) ? Text(item.value.createdAt) : Container(),
+            //         Container(),
+            //         GestureDetector(
+            //           child: Row(
+            //             children: <Widget>[
+            //               Expanded(
+            //                 child: Column(
+            //                   crossAxisAlignment: CrossAxisAlignment.start,
+            //                   children: [
+            //                     Container(
+            //                       padding: const EdgeInsets.only(bottom: 8),
+            //                       child: 
+            //                       Text(
+            //                         item.value.title,
+            //                         overflow: TextOverflow.ellipsis,
+            //                         maxLines: 2,
+            //                         style: TextStyle(
+            //                           fontWeight: FontWeight.bold,
+            //                         ),
+            //                       ),
+            //                     ),
+            //                     Text(
+            //                       item.value.articleNote,
+            //                       overflow: TextOverflow.ellipsis,
+            //                       maxLines: 3,
+            //                       style: TextStyle(
+            //                         color: Colors.grey[500],
+            //                       ),
+            //                     ),
+            //                   ],
+            //                 ),
+            //               ),
+            //               Container(
+            //                 margin: EdgeInsets.only(left: 12),
+            //                 height: 60,
+            //                 width: 120,
+            //                 // child: Text(item.value.ogImageUrl),
+            //                 child: item.value.ogImageUrl == "/images/leo_icon_header.svg" ? 
+            //                   Image.asset('images/leo_icon_header.png')
+            //                   : Image.network(
+            //                   item.value.ogImageUrl,
+            //                 ),
+            //               ),
+            //             ],
+            //           ),
+            //           onTap: () {
+            //             _launchURL(item.value.articleUrl);
+            //           },
+            //         ),
+            //       ],
+            //     ),
+            //   )).toList(),
+            // ),
     );
   }
 }
