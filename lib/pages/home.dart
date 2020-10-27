@@ -81,23 +81,45 @@ class _HomeState extends State<Home> {
   }
   
   // タップしたら記事にとぶ
-  _launchURL(String _url) async {
+  _launchURL(String _url, int _articleId) async {
     if (await canLaunch(_url)) {
       await launch(_url);
+      var uri = Uri.parse(_env.env['MYSQL_URL'] + "/api/v1/articles/" + _articleId.toString() + "/update_is_read");
+      // uri = uri.replace(queryParameters: <String, String>{'is_read': '1'});
+      final http.Response response = await http.put(
+        uri, 
+        headers: <String, String>{
+          'Authorization': "Token 12ec991db7a9d24ad9c0d97bda27b87a1458",
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'is_read': '1',
+        }),
+      );
     } else {
       throw 'Could not Launch $_url';
     }
-  }
-
-  // 保存した日時の表示
-  _decoratDataFormate(String _createdAt) {
-    return _createdAt.substring(0, 10);
   }
 
   // 同じ日に保存したかの確認
   _sameDate(int _index) {
     debugPrint(articles[_index].createdAt);
     return articles[_index-1].createdAt.substring(0, 10) != articles[_index].createdAt.substring(0, 10);
+  }
+
+  // 保存した日時の表示
+  Widget _buildSavedDateWidget(String _date) {
+    return Container(
+      padding: EdgeInsets.only(top: 8, bottom: 6),
+      child: Text(
+        _date.substring(0, 10),
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+        textAlign: TextAlign.right
+      ),
+    );
   }
 
   @override
@@ -125,13 +147,15 @@ class _HomeState extends State<Home> {
       drawer: SideDrawer(),
       body: loading ? Text("Loading ... ")
       : ListView.builder(
+        itemCount: articles.length,
         itemBuilder: (BuildContext context, int index) {
           return Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(horizontal: 16), 
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                index == 0 ? Text(articles[index].createdAt) : 
-                  _sameDate(index) ? Text(articles[index].createdAt) : Container(),
+                index == 0 ? _buildSavedDateWidget(articles[index].createdAt) : 
+                  _sameDate(index) ? _buildSavedDateWidget(articles[index].createdAt) : Container(),
                 Container(),
                 GestureDetector(
                   child: Row(
@@ -148,7 +172,7 @@ class _HomeState extends State<Home> {
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
@@ -177,9 +201,12 @@ class _HomeState extends State<Home> {
                     ],
                   ),
                   onTap: () {
-                    _launchURL(articles[index].articleUrl);
+                    _launchURL(articles[index].articleUrl, articles[index].id);
                   },
                 ),
+                Divider(
+                  color: Colors.black
+                )
               ],
             ),
           );
