@@ -74,7 +74,7 @@ class _SideDrawerState extends State<SideDrawer> with SingleTickerProviderStateM
       children: categories?.map((item) => ListTile(
         title: Text(item.categoryName),
         onTap: () {
-          item.id == 1 ? Home.of(context).getAllArticles("0") :
+          item.id == 1 ? Home.of(context).getAllArticles(tab.text) :
           Home.of(context).getArticles(tab.text, item.id.toString(), item.categoryName);
           Navigator.pop(context);
         },

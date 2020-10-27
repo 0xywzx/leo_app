@@ -34,13 +34,15 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    getArticles("0", "1", "My List");
+    getAllArticles("未読記事");
   }
 
-  Future getAllArticles(String isRead) async {
-        // 記事情報の取得
+  Future getAllArticles(String _readStatusText) async {
+    homeTitle = "My List";
+    String readStatus = _readStatusHandler(_readStatusText);
+    // 記事情報の取得
     var uri = Uri.parse(_env.env['MYSQL_URL'] + "/api/v1/all_unread_or_read_articles");
-    uri = uri.replace(queryParameters: <String, String>{'is_read': isRead});
+    uri = uri.replace(queryParameters: <String, String>{'is_read': readStatus});
     final http.Response response = await http.get(
       uri, headers: <String, String>{
         'Authorization': "Token " + UserToken().session ?? '',
@@ -60,48 +62,55 @@ class _HomeState extends State<Home> {
     }
   }
 
-  Future getArticles(String isRead, String categoryId, String _homeTitle) async {
+  Future getArticles(String _tabTitle, String categoryId, String _homeTitle) async {
     // 開発のためここでprfを定義。あとで消す
     // UserToken().prefs = await SharedPreferences.getInstance();
-    // indexを渡せばもっとうまくかけるかも。
-    if (isRead == "未読記事" || isRead == "既読記事") {
-      if (isRead == "未読記事") {
-        isRead = "0";
-      } else {
-        isRead = "1";
-      }
-    }
-
+    
+    String readStatus = _readStatusHandler(_tabTitle);
+    
     // タイトルをカテゴリーの名前に変更
     homeTitle = _homeTitle;
-    if (isRead == "0") {
+    _titleIconHandler(readStatus);
+
+    // 記事情報の取得
+    var uri = Uri.parse(_env.env['MYSQL_URL'] + "/api/v1/categorised_articles");
+    uri = uri.replace(queryParameters: <String, String>{'is_read': readStatus, 'category_id': categoryId});
+    final http.Response response = await http.get(
+      uri, headers: <String, String>{
+        'Authorization': "Token " + UserToken().session ?? '',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    if (response.statusCode == 200) {
+      final list = json.decode(response.body);
+      if (list is List) {
+        setState(() {
+          articles = list.map((post) => Article.fromJson(post)).toList();
+          loading = false;
+        });
+      }
+    } else {
+      // 記事を取得できなかった場合は何か表示する
+    }
+  }
+
+  // drawerから記事リストに飛んだ時に未読既読を判断する。indexを渡せばもっとうまくかけるかも。
+  _readStatusHandler(String _tabTitle) {
+    if (_tabTitle == "未読記事") {
+      return "0";
+    } else {
+      return "1";
+    }
+  }
+  
+  _titleIconHandler(String _readStatus) {
+    if (_readStatus == "0") {
       titleIcon = "book";
     } else {
       titleIcon = "bookmark";
     }
-
-    // 記事情報の取得
-    var uri = Uri.parse(_env.env['MYSQL_URL'] + "/api/v1/categorised_articles");
-    uri = uri.replace(queryParameters: <String, String>{'is_read': isRead, 'category_id': categoryId});
-    final http.Response response = await http.get(
-      uri, headers: <String, String>{
-        'Authorization': "Token " + UserToken().session ?? '',
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-    if (response.statusCode == 200) {
-      final list = json.decode(response.body);
-      if (list is List) {
-        setState(() {
-          articles = list.map((post) => Article.fromJson(post)).toList();
-          loading = false;
-        });
-      }
-    } else {
-      // 記事を取得できなかった場合は何か表示する
-    }
   }
-  
+
   // タップしたら記事にとぶ
   _launchURL(String _url, int _articleId) async {
     if (await canLaunch(_url)) {
