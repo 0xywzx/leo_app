@@ -22,6 +22,7 @@ class _SplashState extends State<Splash> {
   move() async {
     // sharedPreferenceのインスタンスを保存しておく
     UserToken().prefs = await SharedPreferences.getInstance();
+    // UserToken().prefs.remove("session");
 
     Future.wait([
       _delay(),

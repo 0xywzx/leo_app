@@ -37,11 +37,33 @@ class _HomeState extends State<Home> {
     getArticles("0", "1", "My List");
   }
 
+  Future getAllArticles(String isRead) async {
+        // 記事情報の取得
+    var uri = Uri.parse(_env.env['MYSQL_URL'] + "/api/v1/all_unread_or_read_articles");
+    uri = uri.replace(queryParameters: <String, String>{'is_read': isRead});
+    final http.Response response = await http.get(
+      uri, headers: <String, String>{
+        'Authorization': "Token " + UserToken().session ?? '',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    if (response.statusCode == 200) {
+      final list = json.decode(response.body);
+      if (list is List) {
+        setState(() {
+          articles = list.map((post) => Article.fromJson(post)).toList();
+          loading = false;
+        });
+      }
+    } else {
+      // 記事を取得できなかった場合は何か表示する
+    }
+  }
+
   Future getArticles(String isRead, String categoryId, String _homeTitle) async {
     // 開発のためここでprfを定義。あとで消す
-    UserToken().prefs = await SharedPreferences.getInstance();
-   debugPrint(UserToken().session ?? '');
-    // indexeを渡せばもっとうまくかけるかも。
+    // UserToken().prefs = await SharedPreferences.getInstance();
+    // indexを渡せばもっとうまくかけるかも。
     if (isRead == "未読記事" || isRead == "既読記事") {
       if (isRead == "未読記事") {
         isRead = "0";
@@ -63,7 +85,7 @@ class _HomeState extends State<Home> {
     uri = uri.replace(queryParameters: <String, String>{'is_read': isRead, 'category_id': categoryId});
     final http.Response response = await http.get(
       uri, headers: <String, String>{
-        'Authorization': "Token 5393cb620f0d652b0cc16753c094d095baec",
+        'Authorization': "Token " + UserToken().session ?? '',
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );

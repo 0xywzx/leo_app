@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:leo_app/components/app_color.dart';
 import 'package:leo_app/store/user_token.dart';
 import 'package:leo_app/components/header_logo.dart';
@@ -16,6 +17,7 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   bool _showPassword = false;
   String _errorMessage ='';
+  static DotEnv _env = DotEnv();
   final TextEditingController _userNameEditingController = TextEditingController();
   final TextEditingController _mailEditingController = TextEditingController();
   final TextEditingController _passwordEditingController = TextEditingController();
@@ -31,7 +33,7 @@ class _SignUpState extends State<SignUp> {
       },
     };
     final http.Response response = await http.post(
-      'http://localhost:3000/api/v1/users',
+      _env.env['MYSQL_URL'] + '/api/v1/users',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

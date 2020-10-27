@@ -31,7 +31,7 @@ class _SideDrawerState extends State<SideDrawer> with SingleTickerProviderStateM
     final http.Response response = await http.get(
       uri,
       headers: <String, String>{
-        'Authorization': "Token 5393cb620f0d652b0cc16753c094d095baec",
+        'Authorization': "Token " + UserToken().session ?? '',
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
@@ -40,6 +40,8 @@ class _SideDrawerState extends State<SideDrawer> with SingleTickerProviderStateM
       if (list is List) {
         setState(() {
           categories = list.map((post) => Category.fromJson(post)).toList();
+          Map<String, dynamic> data = {"id": 1, "category_name": "すべて"};
+          categories.insert(0, Category.fromJson(data));
         });
       }
     } else {
@@ -72,6 +74,7 @@ class _SideDrawerState extends State<SideDrawer> with SingleTickerProviderStateM
       children: categories?.map((item) => ListTile(
         title: Text(item.categoryName),
         onTap: () {
+          item.id == 1 ? Home.of(context).getAllArticles("0") :
           Home.of(context).getArticles(tab.text, item.id.toString(), item.categoryName);
           Navigator.pop(context);
         },
