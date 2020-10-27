@@ -25,8 +25,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   static DotEnv _env = DotEnv();
-  List<Article> articles;
-  List<Category> categories;
+  List<Article> articles = [];
+  List<Category> categories = [];
   String homeTitle = "";
   String titleIcon = "";
   bool loading = true;

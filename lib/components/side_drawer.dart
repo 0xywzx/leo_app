@@ -19,7 +19,7 @@ class SideDrawer extends StatefulWidget {
 }
 
 class _SideDrawerState extends State<SideDrawer> with SingleTickerProviderStateMixin {
-  List<Category> categories;
+  List<Category> categories = [];
   static DotEnv _env = DotEnv();
 
   Future getCategories() async {
